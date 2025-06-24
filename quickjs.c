@@ -43322,9 +43322,9 @@ static uint64_t xorshift64star(uint64_t *pstate)
     return x * 0x2545F4914F6CDD1D;
 }
 
-static void js_random_init(JSContext *ctx)
+void JS_RandomInit(JSContext *ctx, uint64_t seed)
 {
-    ctx->random_state = js__gettimeofday_us();
+    ctx->random_state = seed;
     /* the state must be non zero */
     if (ctx->random_state == 0)
         ctx->random_state = 1;
@@ -51772,7 +51772,7 @@ void JS_AddIntrinsicBaseObjects(JSContext *ctx)
                                countof(js_string_iterator_proto_funcs));
 
     /* Math: create as autoinit object */
-    js_random_init(ctx);
+    JS_RandomInit(ctx, js__gettimeofday_us());
     JS_SetPropertyFunctionList(ctx, ctx->global_obj, js_math_obj, countof(js_math_obj));
 
     /* ES6 Reflect: create as autoinit object */
