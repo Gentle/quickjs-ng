@@ -24885,10 +24885,12 @@ static __exception int js_parse_class(JSParseState *s, bool is_class_expr,
 
     /* store the class source code in the constructor. */
     js_free(ctx, ctor_fd->source);
+#ifndef CONFIG_STRIP_SOURCE
     ctor_fd->source_len = s->buf_ptr - class_start_ptr;
     ctor_fd->source = js_strndup(ctx, (const char *)class_start_ptr, ctor_fd->source_len);
     if (!ctor_fd->source)
         goto fail;
+#endif
 
     /* consume the '}' */
     if (next_token(s))
@@ -36016,10 +36018,12 @@ static __exception int js_parse_function_decl2(JSParseState *s,
             /* save the function source code */
             /* the end of the function source code is after the last
                 token of the function source stored into s->last_ptr */
+#ifndef CONFIG_STRIP_SOURCE
             fd->source_len = s->last_ptr - ptr;
             fd->source = js_strndup(ctx, (const char *)ptr, fd->source_len);
             if (!fd->source)
                 goto fail;
+#endif
 
             goto done;
         }
@@ -36043,10 +36047,12 @@ static __exception int js_parse_function_decl2(JSParseState *s,
     }
 
     /* save the function source code */
+#ifndef CONFIG_STRIP_SOURCE
     fd->source_len = s->buf_ptr - ptr;
     fd->source = js_strndup(ctx, (const char *)ptr, fd->source_len);
     if (!fd->source)
         goto fail;
+#endif
 
     if (next_token(s)) {
         /* consume the '}' */
